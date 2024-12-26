@@ -4,4 +4,4 @@ PyPDF2
 pandas
 re
 PIL
-pip==24.2
+pip==24.3.1
