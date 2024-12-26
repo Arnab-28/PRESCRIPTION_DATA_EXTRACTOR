@@ -1,5 +1,5 @@
 streamlit
-google
+google.generativeai
 PyPDF2
 pandas
 re
