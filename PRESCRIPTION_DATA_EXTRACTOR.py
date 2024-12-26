@@ -54,8 +54,8 @@ st.sidebar.header("Contact Me")
 def display_social_icons():
     # Define social media links
     social_media_links = {
-        "LinkedIn": "https://www.linkedin.com/in/your-profile",
-        "GitHub": "https://github.com/your-profile"
+        "LinkedIn": "https://www.linkedin.com/in/arnabdas28",
+        "GitHub": "https://github.com/Arnab-28"
     }
 
     # Create HTML for social media icons
