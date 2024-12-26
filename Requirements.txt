@@ -1,7 +1,0 @@
-streamlit
-google-cloud
-PyPDF2
-pandas
-re
-PIL
-pip==24.2
