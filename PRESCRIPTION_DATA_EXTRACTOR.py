@@ -187,7 +187,7 @@ def clean_text(text):
     return cleaned_text
 
 # Initialize the Streamlit App
-st.set_page_config(page_title="Prescription Data Extractor")
+#st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Prescription Data Extractor")
 
 # Initialize session states if they do not exist
