@@ -124,17 +124,17 @@ def parse_gemini_response(response):
     for line in lines:
         # Extract Patient Name
         if "Patient Name:" in line:
-            patient_name_start = response.index(line) + len("Patient Name:")
-            patient_name_block = response[patient_name_start:].split("Patient Age:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name_block).strip()
+            # Extract the portion of the line after "Patient Name:"
+            patient_name = line.split("Patient Name:", 1)[-1].strip()
+            # Remove unwanted characters (e.g., **, trailing spaces)
+            details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name)
             
         # Extract Patient Age
         elif "Patient Age:" in line:
-            patient_age_start = response.index(line) + len("Patient Age:")
-            patient_age_block = response[patient_age_start:].split("Patient Gender:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Patient Age"] = re.sub(r"^\*\*|\*\*$", "", patient_age_block).strip() 
+            # Extract the portion of the line after "Patient Name:"
+            patient_age = line.split("Patient Age:", 1)[-1].strip()
+            # Remove unwanted characters (e.g., **, trailing spaces)
+            details["Patient Age"] = re.sub(r"^\*\*|\*\*$", "", patient_age) 
             
         # Extract Patient Gender
         elif "Patient Gender:" in line:
