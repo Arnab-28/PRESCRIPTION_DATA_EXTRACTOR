@@ -125,91 +125,91 @@ def parse_gemini_response(response):
         # Extract Patient Name
         if "Patient Name:" in line:
             patient_name_start = response.index(line) + len("Patient Name:")
-            patient_name_block = response[patient_name_start:].split("Patient Age:", 1)[0].strip()  # Stop before the next block
+            patient_name_block = response[patient_name_start:].split("Patient Age:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name_block).strip()
             
         # Extract Patient Age
         elif "Patient Age:" in line:
             patient_age_start = response.index(line) + len("Patient Age:")
-            patient_age_block = response[patient_age_start:].split("Patient Gender:", 1)[0].strip()  # Stop before the next block
+            patient_age_block = response[patient_age_start:].split("Patient Gender:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Patient Age"] = re.sub(r"^\*\*|\*\*$", "", patient_age_block).strip() 
             
         # Extract Patient Gender
         elif "Patient Gender:" in line:
             patient_gender_start = response.index(line) + len("Patient Gender:")
-            patient_gender_block = response[patient_gender_start:].split("Doctor Information:", 1)[0].strip()  # Stop before the next block
+            patient_gender_block = response[patient_gender_start:].split("Doctor Information:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gender_block).strip()
 
         # Extract Doctor Name
         elif "Doctor Name:" in line:
             doctor_name_start = response.index(line) + len("Doctor Name:")
-            doctor_name_block = response[doctor_name_start:].split("Doctor Visiting Date:", 1)[0].strip()  # Stop before the next block
+            doctor_name_block = response[doctor_name_start:].split("Doctor Visiting Date:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Doctor Name"] = re.sub(r"^\*\*|\*\*$", "", doctor_name_block).strip()
         
         # Extract Doctor Visiting Date
         elif "Doctor Visiting Date:" in line:
             doctor_visiting_date_start = response.index(line) + len("Doctor Visiting Date:")
-            doctor_visiting_date_block = response[doctor_visiting_date_start:].split("Prescribed Medications & Dosage & Duration:", 1)[0].strip()  # Stop before the next block
+            doctor_visiting_date_block = response[doctor_visiting_date_start:].split("Prescribed Medications & Dosage & Duration:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Doctor Visiting Date"] = re.sub(r"^\*\*|\*\*$", "", doctor_visiting_date_block).strip()
             
         # Extract Prescribed Medications & Dosage & Duration
         elif "Prescribed Medications & Dosage & Duration:" in line:
             medications_start = response.index(line) + len("Prescribed Medications & Dosage & Duration:")
-            medications_block = response[medications_start:].split("Disease Name, Observations, Vital Signs:", 1)[0].strip()  # Stop before the next block
+            medications_block = response[medications_start:].split("Disease Name, Observations, Vital Signs:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Prescribed Medications & Dosage & Duration"] = re.sub(r"^\*\*|\*\*$", "", medications_block).strip()
 
         # Extract Disease Name
         elif "Disease Name:" in line:
             disease_start = response.index(line) + len("Disease Name:")
-            disease_block = response[disease_start:].split("Observations:", 1)[0].strip()  # Stop before the next block
+            disease_block = response[disease_start:].split("Observations:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Disease Name"] = re.sub(r"^\*\*|\*\*$", "", disease_block).strip()
 
         # Extract Disease Name
         elif "Observations:" in line:
             observations_start = response.index(line) + len("Observations:")
-            observations_block = response[observations_start:].split("Blood Pressure (BP):", 1)[0].strip()  # Stop before the next block
+            observations_block = response[observations_start:].split("Blood Pressure (BP):", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract 
             details["Observations"] = re.sub(r"^\*\*|\*\*$", "", observations_block).strip()
 
         # Extract Blood Pressure (BP)
         elif "Blood Pressure (BP):"  in line:
             blood_pressure_start = response.index(line) + len("Blood Pressure (BP):")
-            blood_pressure_block = response[blood_pressure_start:].split("Pulse Rate (PR):", 1)[0].strip()  # Stop before the next block
+            blood_pressure_block = response[blood_pressure_start:].split("Pulse Rate (PR):", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Blood Pressure (BP)"] = re.sub(r"^\*\*|\*\*$", "", blood_pressure_block).strip()
 
         # Extract Pulse Rate (PR)
         elif "Pulse Rate (PR):" in line:
             pulse_rate_start = response.index(line) + len("Pulse Rate (PR):")
-            pulse_rate_block = response[pulse_rate_start:].split("Body Weight:", 1)[0].strip()  # Stop before the next block
+            pulse_rate_block = response[pulse_rate_start:].split("Body Weight:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Pulse Rate (PR)"] = re.sub(r"^\*\*|\*\*$", "", pulse_rate_block).strip()
 
         # Extract Body Weight
         elif "Body Weight" in line:
             body_weight_start = response.index(line) + len("Body Weight:")
-            body_weight_block = response[body_weight_start:].split("SpO2:", 1)[0].strip()  # Stop before the next block
+            body_weight_block = response[body_weight_start:].split("SpO2:", 1)[-1].strip()  # Stop before the next block
             # Clean the block and extract
             details["Body Weight"] = re.sub(r"^\*\*|\*\*$", "", body_weight_block).strip()
 
         # Extract Oxygen Saturation (SpO2)
         elif "SpO2:" in line:
             oxygen_saturation_spo2_start = response.index(line) + len("Pathology Test Required:")
-            oxygen_saturation_spo2_block = response[oxygen_saturation_spo2_start:].split("Pathology Test Required:", 1)[0].strip() # Stop before the next block
+            oxygen_saturation_spo2_block = response[oxygen_saturation_spo2_start:].split("Pathology Test Required:", 1)[-1].strip() # Stop before the next block
             # Clean the block and extract
-            details["SpO2"] = re.sub(r"^\*\*|\*\*$", "", oxygen_saturation_spo2_block).strip()
+            details["Oxygen Saturation (SpO2)"] = re.sub(r"^\*\*|\*\*$", "", oxygen_saturation_spo2_block).strip()
 
         # Extract Pathology Test Required Details
         elif "Pathology Test Required:" in line:
             pathology_start = response.index(line) + len("Pathology Test Required:")
-            pathology_block = response[pathology_start:].split("Important Note:", 1)[0].strip() # Stop before the next block
+            pathology_block = response[pathology_start:].split("Important Note:", 1)[-1].strip() # Stop before the next block
             # Clean the block and extract
             details["Pathology Test Required"] = re.sub(r"^\*\*|\*\*$", "", pathology_block).strip()
 
