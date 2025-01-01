@@ -234,12 +234,14 @@ def parse_gemini_response(response):
                 pathology_test_report = line.split("Pathology Test Report:", 1)[-1].strip()
                 # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Pathology Test Report"] = re.sub(r"^\*\*|\*\*$", "", pathology_test_report)
-        # Add the extracted details to the list
-        all_details.append(details)
+                
+        # Add the extracted details to the list only if there's valid information
+        if any(value != "N/A" for value in details.values()):
+            all_details.append(details)
+            
     # Convert list of details into a DataFrame
     return pd.DataFrame(all_details)
      
-    
 # Function to clean the text by removing '*' and extra newlines
 def clean_text(text):
     # Remove '*' characters
