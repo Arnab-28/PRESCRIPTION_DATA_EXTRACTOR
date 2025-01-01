@@ -260,8 +260,6 @@ if "all_details_df" not in st.session_state:
     st.session_state["all_details_df"] = pd.DataFrame()  # Initialize an empty DataFrame
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
-if "text_buffer" not in st.session_state:
-    st.session_state["text_buffer"] = io.StringIO()  # In-memory buffer to store text temporarily
 if "edited_text" not in st.session_state:
     st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
