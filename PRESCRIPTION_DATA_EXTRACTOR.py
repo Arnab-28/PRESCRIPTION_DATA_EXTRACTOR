@@ -4,6 +4,7 @@ import google.generativeai as genai
 import PyPDF2 as pdf
 import pandas as pd
 import re
+import io
 
 # Configure the Generative AI Model
 genai.configure(api_key=st.secrets["api_key"])
@@ -259,8 +260,10 @@ if "all_details_df" not in st.session_state:
     st.session_state["all_details_df"] = pd.DataFrame()  # Initialize an empty DataFrame
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
-if "edited_text" not in st.session_state:
-    st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
+if "text_buffer" not in st.session_state:
+    st.session_state["text_buffer"] = io.StringIO()  # In-memory buffer to store text temporarily
+#if "edited_text" not in st.session_state:
+    #st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
@@ -317,12 +320,29 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
-            st.session_state["extracted_text"] = cleaned_response
-            
-            # Display the cleaned response in a text area, allowing the user to edit
-            edited_text = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
-            
-            st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
+
+                # Ensure buffer initialization (recheck session state)
+                if "text_buffer" not in st.session_state:
+                    st.session_state["text_buffer"] = io.StringIO()
+
+                # Store the cleaned response into the buffer
+                buffer = st.session_state["text_buffer"]
+                buffer.seek(0)  # Move to the beginning of the buffer
+                buffer.write(cleaned_response)  # Write cleaned response to buffer
+                buffer.truncate()  # Remove any extra content if buffer length exceeds
+
+                # Save to session state for persistent access
+                st.session_state["extracted_text"] = cleaned_response
+
+                # Display the cleaned response in a text area, allowing the user to edit
+                edited_text = st.text_area("Extracted Data (editable)", st.session_state["extracted_text"], height=200)
+
+                # Update the session state with the edited text
+                st.session_state["extracted_text"] = edited_text
+
+                # Display the updated session state in the text area and allow download
+                st.download_button("Download Edited Extracted Data (.txt)", st.session_state["extracted_text"], 
+                                   file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
