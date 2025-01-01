@@ -248,7 +248,6 @@ def clean_text(text):
     cleaned_text = re.sub(r"\*+", "", text)
     # Remove extra newlines and trim leading/trailing whitespaces
     cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
-    cleaned_text = re.sub(r"```text.*?```", "", cleaned_text, flags=re.DOTALL)
     return cleaned_text
 
 # Initialize the Streamlit App
@@ -279,7 +278,7 @@ Please follow these instructions carefully:
 2. If no information matches the description, return 'N/A' value.
 3. Your output should contain only the data that is explicitly requested, with no other text.
 
-Please generate in a text content.
+Please generate in a text content don't generate in the parse format.
 """
 
 # File uploader for multiple files
