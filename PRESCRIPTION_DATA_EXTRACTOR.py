@@ -335,4 +335,4 @@ if uploaded_text_file:
     st.dataframe(details_df)
 
     # Export table to CSV
-    st.download_button("Download Table (CSV)", details_df.to_csv(index=False), file_name="extracted_data_table.csv", mime="text/csv")
+    st.download_button("Download Table (CSV)", details_df.to_csv(index=False), details_df.style.hide_index(),file_name="extracted_data_table.csv", mime="text/csv")
