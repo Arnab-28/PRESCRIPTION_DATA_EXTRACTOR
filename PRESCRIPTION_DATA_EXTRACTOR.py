@@ -4,7 +4,6 @@ import google.generativeai as genai
 import PyPDF2 as pdf
 import pandas as pd
 import re
-import os
 
 # Configure the Generative AI Model
 genai.configure(api_key=st.secrets["api_key"])
@@ -252,6 +251,7 @@ def clean_text(text):
     return cleaned_text
 
 # Initialize the Streamlit App
+#st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
 
 # Initialize session states if they do not exist
@@ -316,33 +316,16 @@ if uploaded_file:
         if image_part or pdf_text:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
-                st.session_state["extracted_text"] = response  # Store the model's response in session state
-        else:
-            st.warning(f"Unsupported file type or empty content: {uploaded_file.name}")  
+                cleaned_response = clean_text(response)
+            st.session_state["extracted_text"] = cleaned_response
+            # Display the cleaned response in a text area, allowing the user to edit
+            edited_text = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
+
+            # Update the session state with the edited text
+            st.session_state["edited_text"] = edited_text
             
-# Text Area for Editable Extracted Data
-if "extracted_text" in st.session_state:
-    edited_text = st.text_area("Extracted Data (Editable)", 
-                               value=st.session_state.get("extracted_text", ""), 
-                               height=300)
-    st.session_state["edited_text"] = edited_text  # Update session state with user edits
-
-    # Save the edited text to a .txt file when the button is clicked
-    if st.button("Convert Extracted Data as TXT"):
-        file_name = "edited_extracted_data.txt"
-        with open(file_name, "w") as file:
-            file.write(st.session_state["edited_text"])
-        st.success("Extracted data has been saved to a .txt file. You can now download it.")
-
-    # Provide a download button for the text file
-    if os.path.exists("edited_extracted_data.txt"):
-        with open("edited_data.txt", "r") as file:
-            st.download_button(
-                label="Download Extracted Data as TXT",
-                data=file,
-                file_name="edited_extracted_data.txt",
-                mime="text/plain"
-            )
+            # Download the cleaned extracted text as .txt file
+            st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
