@@ -116,7 +116,7 @@ def parse_gemini_response(response):
         "Pulse Rate (PR)": "N/A",
         "Body Weight": "N/A",
         "Oxygen Saturation (SpO2)": "N/A",
-        "Pathology Test Required": "N/A"
+        "Pathology Test Required": "N/A",
         "Pathology Test Report": "N/A"
     }
     # Split the response into lines for processing
