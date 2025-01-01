@@ -323,7 +323,7 @@ if uploaded_file:
             edited_text = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
             
             # Download the cleaned extracted text as .txt file
-            st.button("Download Edited Extracted Data (.txt)"):
+            st.button("Download Edited Extracted Data in .txt format"):
                 with open("extracted_data.txt","w") as f:
                     f.write(edited_text)
                 st.success("Successfully Download Edited Extracted Data!")
