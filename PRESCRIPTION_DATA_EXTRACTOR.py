@@ -219,7 +219,7 @@ def parse_gemini_response(response):
                 # Extract the portion of the line after "Disease Name:"
                 spo2 = line.split("Oxygen Saturation:", 1)[-1].strip()
                 # Remove unwanted characters (e.g., **, trailing spaces)
-                details["Oxygen Saturation"] = re.sub(r"^\*\*|\*\*$", "", spo2)
+                details["Oxygen Saturation (in %)"] = re.sub(r"^\*\*|\*\*$", "", spo2)
 
             # Extract Pathology Test Required Details
             elif "Pathology Test Required" in line:
