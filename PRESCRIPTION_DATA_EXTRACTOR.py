@@ -4,7 +4,7 @@ import google.generativeai as genai
 import PyPDF2 as pdf
 import pandas as pd
 import re
-import io
+from io import StringIO
 
 # Configure the Generative AI Model
 genai.configure(api_key=st.secrets["api_key"])
@@ -260,7 +260,7 @@ if "all_details_df" not in st.session_state:
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
 if "text_buffer" not in st.session_state:
-    st.session_state["text_buffer"] = io.StringIO()  # In-memory buffer to store text temporarily
+    st.session_state["text_buffer"] = StringIO()  # In-memory buffer to store text temporarily
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
