@@ -4,6 +4,7 @@ import google.generativeai as genai
 import PyPDF2 as pdf
 import pandas as pd
 import re
+import os
 
 # Configure the Generative AI Model
 genai.configure(api_key=st.secrets["api_key"])
