@@ -138,10 +138,10 @@ def parse_gemini_response(response):
             
         # Extract Patient Gender
         elif "Patient Gender:" in line:
-            patient_gender_start = response.index(line) + len("Patient Gender:")
-            patient_gender_block = response[patient_gender_start:].split("Doctor Information:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gender_block).strip()
+            # Extract the portion of the line after "Patient Name:"
+            patient_gender = line.split("Patient Gender:", 1)[-1].strip()
+            # Remove unwanted characters (e.g., **, trailing spaces)
+            details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gndere)
 
         # Extract Doctor Name
         elif "Doctor Name:" in line:
@@ -236,16 +236,21 @@ if "edited_text" not in st.session_state:
     st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
 # Define the Default input prompt for Data extraction
-prompt = """You are an expert in understanding Medical Prescription.
+prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
 
 We will upload an image as Medical Prescription and you will have to extract information such as:
 - Patient Name, Patient Age, Patient Gender
 - Doctor Name, Doctor Visiting Date
 - Prescribed Medications & Dosage & Duration
 - Disease Name, Observations, Blood Pressure, Pulse Rate, Body Weight, SpO2
-- Pathology Test Required.
+- Pathology Test Required
+- Pathology Test Result.
 
-Fill missing fields with 'N/A'.
+Please follow these instructions carefully:
+1. **No Extra Content:** Do not include any additional text, comments, or explanations in your response.
+2. **Empty Response:** If no information matches the description, return 'N/A' value.
+3. **Direct Data Only:** Your output should contain only the data that is explicitly requested, with no other text.
+
 """
 
 # File uploader for multiple files
