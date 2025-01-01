@@ -248,6 +248,7 @@ def clean_text(text):
     cleaned_text = re.sub(r"\*+", "", text)
     # Remove extra newlines and trim leading/trailing whitespaces
     cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
+    cleaned_text = re.sub(r"'''text.*?'''", "", cleaned_text, flags=re.DOTALL)
     return cleaned_text
 
 # Initialize the Streamlit App
