@@ -315,6 +315,8 @@ if uploaded_file:
         if image_part or pdf_text:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
+                st.session_state["extracted_text"] = response  # Store the model's response in session state
+                
                 cleaned_response = clean_text(response)
 
                 # Save to session state for persistent access
