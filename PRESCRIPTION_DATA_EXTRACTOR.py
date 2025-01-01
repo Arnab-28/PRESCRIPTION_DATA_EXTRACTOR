@@ -117,6 +117,7 @@ def parse_gemini_response(response):
         "Body Weight": "N/A",
         "Oxygen Saturation (SpO2)": "N/A",
         "Pathology Test Required": "N/A"
+        "Pathology Test Report": "N/A"
     }
     # Split the response into lines for processing
     lines = response.split("\n")
@@ -247,10 +248,9 @@ We will upload an image as Medical Prescription and you will have to extract inf
 - Pathology Test Result.
 
 Please follow these instructions carefully:
-1. **No Extra Content:** Do not include any additional text, comments, or explanations in your response.
-2. **Empty Response:** If no information matches the description, return 'N/A' value.
-3. **Direct Data Only:** Your output should contain only the data that is explicitly requested, with no other text.
-
+1. Do not include any additional text, comments, or explanations in your response.
+2. If no information matches the description, return 'N/A' value.
+3. Your output should contain only the data that is explicitly requested, with no other text.
 """
 
 # File uploader for multiple files
