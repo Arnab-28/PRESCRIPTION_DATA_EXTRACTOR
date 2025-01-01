@@ -332,9 +332,7 @@ if uploaded_text_file:
     text_data = uploaded_text_file.read().decode("utf-8")
     st.text(text_data)
     # Parse the text data and convert it into structured table format
-    parsed_details = parse_gemini_response(text_data)
-    details_df = pd.DataFrame([parsed_details])
-    
+    details_df = parse_gemini_response(text_data)
     # Display the parsed table
     st.dataframe(details_df)
 
