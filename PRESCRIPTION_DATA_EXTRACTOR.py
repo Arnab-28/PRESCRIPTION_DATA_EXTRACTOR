@@ -103,119 +103,147 @@ def get_gemini_response(input_prompt, image_parts=None, pdf_text=None):
 
 # Function to parse Gemini's response into structured data
 def parse_gemini_response(response):
-    details = {
-        "Patient Name": "N/A",
-        "Patient Age": "N/A",
-        "Patient Gender": "N/A",
-        "Doctor Visiting Date": "N/A",
-        "Doctor Name": "N/A",
-        "Prescribed Medications & Dosage & Duration": "N/A",
-        "Disease Name": "N/A",
-        "Observations": "N/A",
-        "Blood Pressure (BP)": "N/A",
-        "Pulse Rate (PR)": "N/A",
-        "Body Weight": "N/A",
-        "Oxygen Saturation (SpO2)": "N/A",
-        "Pathology Test Required": "N/A",
-        "Pathology Test Report": "N/A"
-    }
-    # Split the response into lines for processing
-    lines = response.split("\n")
-    
-    for line in lines:
-        # Extract Patient Name
-        if "Patient Name:" in line:
-            # Extract the portion of the line after "Patient Name:"
-            patient_name = line.split("Patient Name:", 1)[-1].strip()
-            # Remove unwanted characters (e.g., **, trailing spaces)
-            details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name)
-            
-        # Extract Patient Age
-        elif "Patient Age:" in line:
-            # Extract the portion of the line after "Patient Name:"
-            patient_age = line.split("Patient Age:", 1)[-1].strip()
-            # Remove unwanted characters (e.g., **, trailing spaces)
-            details["Patient Age"] = re.sub(r"^\*\*|\*\*$", "", patient_age) 
-            
-        # Extract Patient Gender
-        elif "Patient Gender:" in line:
-            # Extract the portion of the line after "Patient Name:"
-            patient_gender = line.split("Patient Gender:", 1)[-1].strip()
-            # Remove unwanted characters (e.g., **, trailing spaces)
-            details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gndere)
+    """
+    Parse the response from Gemini to extract multiple patients' data.
+    """
+    # Initialize an empty list to store patient records
+    all_details = []
 
-        # Extract Doctor Name
-        elif "Doctor Name:" in line:
-            doctor_name_start = response.index(line) + len("Doctor Name:")
-            doctor_name_block = response[doctor_name_start:].split("Doctor Visiting Date:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Doctor Name"] = re.sub(r"^\*\*|\*\*$", "", doctor_name_block).strip()
+    # Split response into patient blocks using a delimiter or pattern
+    patient_blocks = re.split(r"(?=Patient No:)", response)  # Split on "Patient Name:"
+
+    # Iterate through each block and extract details
+    for block in patient_blocks:
+        # Skip empty blocks
+        if not block.strip():
+            continue
         
-        # Extract Doctor Visiting Date
-        elif "Doctor Visiting Date:" in line:
-            doctor_visiting_date_start = response.index(line) + len("Doctor Visiting Date:")
-            doctor_visiting_date_block = response[doctor_visiting_date_start:].split("Prescribed Medications & Dosage & Duration:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Doctor Visiting Date"] = re.sub(r"^\*\*|\*\*$", "", doctor_visiting_date_block).strip()
+        # Initialize a default dictionary for patient details
+        details = {
+            "Patient Name": "N/A",
+            "Patient Age (in Years)": "N/A",
+            "Patient Gender": "N/A",
+            "Doctor Visiting Date": "N/A",
+            "Doctor Name": "N/A",
+            "Prescribed Medications & Dosage & Duration": "N/A",
+            "Disease Name": "N/A",
+            "Observations": "N/A",
+            "Blood Pressure (in mm of Hg)": "N/A",
+            "Pulse Rate (in beats per minute)": "N/A",
+            "Body Weight (in Kg)": "N/A",
+            "Oxygen Saturation (in %)": "N/A",
+            "Pathology Test Required": "N/A",
+            "Pathology Test Report": "N/A"
+        }
+        # Split the response into lines for processing
+        lines = response.split("\n")
+        
+        for line in lines:
+            # Extract Patient Name
+            if "Patient Name:" in line:
+                # Extract the portion of the line after "Patient Name:"
+                patient_name = line.split("Patient Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name)
+                
+            # Extract Patient Age
+            elif "Patient Age:" in line:
+                # Extract the portion of the line after "Patient Age:"
+                patient_age = line.split("Patient Age:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Patient Age (in Years)"] = re.sub(r"^\*\*|\*\*$", "", patient_age) 
+                
+            # Extract Patient Gender
+            elif "Patient Gender:" in line:
+                # Extract the portion of the line after "Patient Gender:"
+                patient_gender = line.split("Patient Gender:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gender)
+
+            # Extract Doctor Name
+            elif "Doctor Name:" in line:
+                # Extract the portion of the line after "Doctor Name:"
+                doctor_name = line.split("Doctor Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Doctor Name"] = re.sub(r"^\*\*|\*\*$", "", doctor_name)
             
-        # Extract Prescribed Medications & Dosage & Duration
-        elif "Prescribed Medications & Dosage & Duration:" in line:
-            medications_start = response.index(line) + len("Prescribed Medications & Dosage & Duration:")
-            medications_block = response[medications_start:].split("Disease Name, Observations, Vital Signs:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Prescribed Medications & Dosage & Duration"] = re.sub(r"^\*\*|\*\*$", "", medications_block).strip()
+            # Extract Doctor Visiting Date
+            elif "Doctor Visiting Date:" in line:
+                # Extract the portion of the line after "Doctor Visiting Date:"
+                doctor_visiting_date = line.split("Doctor Visiting Date:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Doctor Visiting Date"] = re.sub(r"^\*\*|\*\*$", "", doctor_visiting_date)
+                
+            # Extract Prescribed Medications & Dosage & Duration
+            elif "Prescribed Medications & Dosage & Duration:" in line:
+                # Extract the portion of the line after "Prescribed Medications & Dosage & Duration:"
+                prescribed_medications = line.split("Prescribed Medications & Dosage & Duration:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Prescribed Medications & Dosage & Duration"] = re.sub(r"^\*\*|\*\*$", "", prescribed_medications)
 
-        # Extract Disease Name
-        elif "Disease Name:" in line:
-            disease_start = response.index(line) + len("Disease Name:")
-            disease_block = response[disease_start:].split("Observations:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Disease Name"] = re.sub(r"^\*\*|\*\*$", "", disease_block).strip()
+            # Extract Disease Name
+            elif "Disease Name:" in line:
+                # Extract the portion of the line after "Disease Name:"
+                disease_name = line.split("Disease Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Disease Name"] = re.sub(r"^\*\*|\*\*$", "", disease_name)
 
-        # Extract Disease Name
-        elif "Observations:" in line:
-            observations_start = response.index(line) + len("Observations:")
-            observations_block = response[observations_start:].split("Blood Pressure (BP):", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract 
-            details["Observations"] = re.sub(r"^\*\*|\*\*$", "", observations_block).strip()
+            # Extract Disease Name
+            elif "Observations:" in line:
+                # Extract the portion of the line after "Observations:"
+                observations = line.split("Observations:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Observations"] = re.sub(r"^\*\*|\*\*$", "", observations)
 
-        # Extract Blood Pressure (BP)
-        elif "Blood Pressure (BP):"  in line:
-            blood_pressure_start = response.index(line) + len("Blood Pressure (BP):")
-            blood_pressure_block = response[blood_pressure_start:].split("Pulse Rate (PR):", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Blood Pressure (BP)"] = re.sub(r"^\*\*|\*\*$", "", blood_pressure_block).strip()
+            # Extract Blood Pressure (BP)
+            elif "Blood Pressure:"  in line:
+                # Extract the portion of the line after "Observations:"
+                blood_pressure = line.split("Blood Pressure:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Blood Pressure (in mm of Hg)"] = re.sub(r"^\*\*|\*\*$", "", blood_pressure)
 
-        # Extract Pulse Rate (PR)
-        elif "Pulse Rate (PR):" in line:
-            pulse_rate_start = response.index(line) + len("Pulse Rate (PR):")
-            pulse_rate_block = response[pulse_rate_start:].split("Body Weight:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Pulse Rate (PR)"] = re.sub(r"^\*\*|\*\*$", "", pulse_rate_block).strip()
+            # Extract Pulse Rate (PR)
+            elif "Pulse Rate" in line:
+                # Extract the portion of the line after "Disease Name:"
+                pulse_rate = line.split("Pulse Rate:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Pulse Rate (in beats per minute)"] = re.sub(r"^\*\*|\*\*$", "", pulse_rate)
 
-        # Extract Body Weight
-        elif "Body Weight" in line:
-            body_weight_start = response.index(line) + len("Body Weight:")
-            body_weight_block = response[body_weight_start:].split("SpO2:", 1)[-1].strip()  # Stop before the next block
-            # Clean the block and extract
-            details["Body Weight"] = re.sub(r"^\*\*|\*\*$", "", body_weight_block).strip()
+            # Extract Body Weight
+            elif "Body Weight" in line:
+                # Extract the portion of the line after "Disease Name:"
+                body_weight = line.split("Body Weight:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Body Weight (in Kg)"] = re.sub(r"^\*\*|\*\*$", "", body_weight)
 
-        # Extract Oxygen Saturation (SpO2)
-        elif "SpO2:" in line:
-            oxygen_saturation_spo2_start = response.index(line) + len("Pathology Test Required:")
-            oxygen_saturation_spo2_block = response[oxygen_saturation_spo2_start:].split("Pathology Test Required:", 1)[-1].strip() # Stop before the next block
-            # Clean the block and extract
-            details["Oxygen Saturation (SpO2)"] = re.sub(r"^\*\*|\*\*$", "", oxygen_saturation_spo2_block).strip()
+            # Extract Oxygen Saturation (SpO2)
+            elif "Oxygen Saturation (SpO2)" in line:
+                # Extract the portion of the line after "Disease Name:"
+                spo2 = line.split("Oxygen Saturation (SpO2):", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Oxygen Saturation (SpO2)"] = re.sub(r"^\*\*|\*\*$", "", spo2)
 
-        # Extract Pathology Test Required Details
-        elif "Pathology Test Required:" in line:
-            pathology_start = response.index(line) + len("Pathology Test Required:")
-            pathology_block = response[pathology_start:].split("Important Note:", 1)[-1].strip() # Stop before the next block
-            # Clean the block and extract
-            details["Pathology Test Required"] = re.sub(r"^\*\*|\*\*$", "", pathology_block).strip()
+            # Extract Pathology Test Required Details
+            elif "Pathology Test Required" in line:
+                # Extract the portion of the line after "Disease Name:"
+                pathology_test_required = line.split("Pathology Test Required:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Pathology Test Required"] = re.sub(r"^\*\*|\*\*$", "", pathology_test_required)
 
-    return details
+            # Extract Pathology Test Report Details
+            elif "Pathology Test Report" in line:
+                # Extract the portion of the line after "Disease Name:"
+                pathology_test_report = line.split("Pathology Test Report:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
+                details["Pathology Test Report"] = re.sub(r"^\*\*|\*\*$", "", pathology_test_report)
 
+        # Add the extracted details to the list
+        all_details.append(details)
+
+    # Convert list of details into a DataFrame
+    details_df = pd.DataFrame(all_details)
+    return details_df
+    
 # Function to clean the text by removing '*' and extra newlines
 def clean_text(text):
     # Remove '*' characters
@@ -226,7 +254,7 @@ def clean_text(text):
 
 # Initialize the Streamlit App
 #st.set_page_config(page_title="Prescription Data Extractor")
-st.header("Prescription Data Extractor")
+st.header("Medical Document Data Extractor")
 
 # Initialize session states if they do not exist
 if "all_details_df" not in st.session_state:
@@ -243,14 +271,16 @@ We will upload an image as Medical Prescription and you will have to extract inf
 - Patient Name, Patient Age, Patient Gender
 - Doctor Name, Doctor Visiting Date
 - Prescribed Medications & Dosage & Duration
-- Disease Name, Observations, Blood Pressure, Pulse Rate, Body Weight, SpO2
+- Disease Name, Observations, Blood Pressure, Pulse Rate, Body Weight, Oxygen Saturation (SpO2)
 - Pathology Test Required
-- Pathology Test Result.
+- Pathology Test Report.
 
 Please follow these instructions carefully:
 1. Do not include any additional text, comments, or explanations in your response.
 2. If no information matches the description, return 'N/A' value.
 3. Your output should contain only the data that is explicitly requested, with no other text.
+
+Please generate in a text content.
 """
 
 # File uploader for multiple files
@@ -266,7 +296,7 @@ if uploaded_file:
     # Process Image File
     if file_type in ["image/jpeg", "image/png"]:
         image = Image.open(uploaded_file)
-        st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_container_width=True)
+        st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_column_width=True)
         uploaded_file.seek(0)  # Reset file pointer to the beginning
         bytes_data = uploaded_file.read()
         image_part = [{"mime_type": file_type, "data": bytes_data}]
@@ -284,7 +314,7 @@ if uploaded_file:
                 st.warning(f"Warning: No extractable text on page {page+1}.")
 
     # Extract Data Button
-    if st.button("Extract Data"):
+    if st.button("Extract Information"):
         if image_part or pdf_text:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
@@ -296,7 +326,7 @@ if uploaded_file:
             st.download_button("Download Extracted Data (.txt)", cleaned_response, file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
-uploaded_text_file = st.file_uploader("Upload Processed Text File", type=["txt"])
+uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
 
 if uploaded_text_file:
     text_data = uploaded_text_file.read().decode("utf-8")
