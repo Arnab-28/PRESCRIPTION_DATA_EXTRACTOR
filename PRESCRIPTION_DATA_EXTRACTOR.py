@@ -292,7 +292,7 @@ if uploaded_file:
     # Process Image File
     if file_type in ["image/jpeg", "image/png"]:
         image = Image.open(uploaded_file)
-        st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_column_width=True)
+        st.image(image, caption=f"Uploaded Image: {uploaded_file.name}", use_container_width=True)
         uploaded_file.seek(0)  # Reset file pointer to the beginning
         bytes_data = uploaded_file.read()
         image_part = [{"mime_type": file_type, "data": bytes_data}]
