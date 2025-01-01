@@ -110,14 +110,10 @@ def parse_gemini_response(response):
     all_details = []
 
     # Split response into patient blocks using a delimiter or pattern
-    patient_blocks = re.split(r"(?=Patient No:)", response)  # Split on "Patient Name:"
+    patient_blocks = re.split(r"(?=Patient Name:)", response)  # Split on "Patient Name:"
 
     # Iterate through each block and extract details
     for block in patient_blocks:
-        # Skip empty blocks
-        if not block.strip():
-            continue
-        
         # Initialize a default dictionary for patient details
         details = {
             "Patient Name": "N/A",
@@ -241,8 +237,8 @@ def parse_gemini_response(response):
         all_details.append(details)
 
     # Convert list of details into a DataFrame
-    details_df = pd.DataFrame(all_details)
-    return details_df
+    return pd.DataFrame(all_details)
+     
     
 # Function to clean the text by removing '*' and extra newlines
 def clean_text(text):
