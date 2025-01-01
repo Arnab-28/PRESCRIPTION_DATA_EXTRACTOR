@@ -214,12 +214,12 @@ def parse_gemini_response(response):
                 # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Body Weight (in Kg)"] = re.sub(r"^\*\*|\*\*$", "", body_weight)
 
-            # Extract Oxygen Saturation (SpO2)
-            elif "Oxygen Saturation (SpO2)" in line:
+            # Extract Oxygen Saturation
+            elif "Oxygen Saturation" in line:
                 # Extract the portion of the line after "Disease Name:"
-                spo2 = line.split("Oxygen Saturation (SpO2):", 1)[-1].strip()
+                spo2 = line.split("Oxygen Saturation:", 1)[-1].strip()
                 # Remove unwanted characters (e.g., **, trailing spaces)
-                details["Oxygen Saturation (SpO2)"] = re.sub(r"^\*\*|\*\*$", "", spo2)
+                details["Oxygen Saturation"] = re.sub(r"^\*\*|\*\*$", "", spo2)
 
             # Extract Pathology Test Required Details
             elif "Pathology Test Required" in line:
@@ -267,7 +267,7 @@ We will upload an image as Medical Prescription and you will have to extract inf
 - Patient Name, Patient Age, Patient Gender
 - Doctor Name, Doctor Visiting Date
 - Prescribed Medications & Dosage & Duration
-- Disease Name, Observations, Blood Pressure, Pulse Rate, Body Weight, Oxygen Saturation (SpO2)
+- Disease Name, Observations, Blood Pressure, Pulse Rate, Body Weight, Oxygen Saturation
 - Pathology Test Required
 - Pathology Test Report.
 
