@@ -322,8 +322,8 @@ if uploaded_file:
                 # Save to session state for persistent access
                 st.session_state["extracted_text"] = cleaned_response
 
-# Display the cleaned response in a text area
-edited_text = st.text_area("Extracted Data (editable)", value= cleaned_response, height=200)
+                # Display the cleaned response in a text area
+                edited_text = st.text_area("Extracted Data (editable)", value= cleaned_response, height=200)
 
 # Update the session state with the edited text when the user edits it
 if edited_text != st.session_state["extracted_text"]:
