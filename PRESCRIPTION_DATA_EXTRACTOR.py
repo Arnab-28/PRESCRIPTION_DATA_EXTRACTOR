@@ -280,7 +280,7 @@ Please generate in a text content.
 """
 
 # File uploader for multiple files
-uploaded_file = st.file_uploader("Choose an Image/PDF of the Prescription", 
+uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
 
