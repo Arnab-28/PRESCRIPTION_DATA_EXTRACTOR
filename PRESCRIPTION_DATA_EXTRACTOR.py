@@ -262,8 +262,8 @@ if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
 if "text_buffer" not in st.session_state:
     st.session_state["text_buffer"] = io.StringIO()  # In-memory buffer to store text temporarily
-#if "edited_text" not in st.session_state:
-    #st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
+if "edited_text" not in st.session_state:
+    st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
@@ -320,18 +320,6 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
-                
-                '''
-                # Ensure buffer initialization (recheck session state)
-                if "text_buffer" not in st.session_state:
-                    st.session_state["text_buffer"] = io.StringIO()
-
-                # Store the cleaned response into the buffer
-                buffer = st.session_state["text_buffer"]
-                buffer.seek(0)  # Move to the beginning of the buffer
-                buffer.write(cleaned_response)  # Write cleaned response to buffer
-                buffer.truncate()  # Remove any extra content if buffer length exceeds
-                '''
                 
                 # Save to session state for persistent access
                 st.session_state["extracted_text"] = cleaned_response
