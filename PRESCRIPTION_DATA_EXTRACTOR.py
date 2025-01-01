@@ -4,7 +4,6 @@ import google.generativeai as genai
 import PyPDF2 as pdf
 import pandas as pd
 import re
-from io import StringIO
 
 # Configure the Generative AI Model
 genai.configure(api_key=st.secrets["api_key"])
@@ -260,7 +259,7 @@ if "all_details_df" not in st.session_state:
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
 if "text_buffer" not in st.session_state:
-    st.session_state["text_buffer"] = StringIO()  # In-memory buffer to store text temporarily
+    st.session_state["text_buffer"] = "" # Initialize with empty string
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
@@ -318,17 +317,11 @@ if uploaded_file:
             if response:
                 cleaned_response = clean_text(response)
 
-                # Store the cleaned response into the buffer
-                buffer = st.session_state["text_buffer"]
-                buffer.seek(0)  # Move to the beginning of the buffer
-                buffer.write(cleaned_response)  # Write cleaned response to buffer
-                buffer.truncate()  # Remove any extra content if buffer length exceeds
-
                 # Save to session state for persistent access
                 st.session_state["extracted_text"] = cleaned_response
 
                 # Display the cleaned response in a text area, allowing the user to edit
-                edited_text = st.text_area("Extracted Data (editable)", st.session_state["edited_text"], height=200)
+                edited_text = st.text_area("Extracted Data (editable)", st.session_state["text_buffer"], height=200)
 
                 # Update the session state with the edited text
                 st.session_state["edited_text"] = edited_text
