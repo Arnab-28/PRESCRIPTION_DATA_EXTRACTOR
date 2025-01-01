@@ -320,7 +320,8 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
-
+                
+                '''
                 # Ensure buffer initialization (recheck session state)
                 if "text_buffer" not in st.session_state:
                     st.session_state["text_buffer"] = io.StringIO()
@@ -330,19 +331,20 @@ if uploaded_file:
                 buffer.seek(0)  # Move to the beginning of the buffer
                 buffer.write(cleaned_response)  # Write cleaned response to buffer
                 buffer.truncate()  # Remove any extra content if buffer length exceeds
-
+                '''
+                
                 # Save to session state for persistent access
                 st.session_state["extracted_text"] = cleaned_response
 
 # Display the cleaned response in a text area
-edited_text = st.text_area("Extracted Data (editable)", value=st.session_state.get("extracted_text", ""), height=200)
+edited_text = st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200)
 
 # Update the session state with the edited text when the user edits it
-if edited_text != st.session_state.get("extracted_text", ""):
+if edited_text != st.session_state["extracted_text"]:
     st.session_state["extracted_text"] = edited_text
 
 # Display the download button only if there is content to download
-if st.session_state.get("extracted_text", ""):
+if st.session_state["extracted_text"]:
     st.download_button("Download Edited Extracted Data (.txt)", st.session_state["extracted_text"], 
                        file_name="extracted_data.txt", mime="text/plain")
 else:
