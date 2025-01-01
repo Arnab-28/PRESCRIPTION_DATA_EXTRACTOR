@@ -340,10 +340,13 @@ if uploaded_file:
                 # Update the session state with the edited text
                 st.session_state["extracted_text"] = edited_text
 
-                # Display the updated session state in the text area and allow download
-                st.download_button("Download Edited Extracted Data (.txt)", st.session_state["extracted_text"], 
+                # Display the download button only if there is content to download
+                if st.session_state["extracted_text"]:
+                    st.download_button("Download Edited Extracted Data (.txt)", st.session_state["extracted_text"], 
                                    file_name="extracted_data.txt", mime="text/plain")
-
+                else:
+                    st.warning("No data to download.")
+                    
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
 
