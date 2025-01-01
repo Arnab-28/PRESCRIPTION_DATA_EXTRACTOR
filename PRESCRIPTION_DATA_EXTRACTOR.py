@@ -331,8 +331,8 @@ if uploaded_text_file:
     st.text(text_data)
     # Parse the text data and convert it into structured table format
     details_df = parse_gemini_response(text_data)
-    # Display the parsed table
-    st.dataframe(details_df.style.hide_index_())
+    # Display the DataFrame in Streamlit without the index column
+    st.write(details_df.to_html(index=False), unsafe_allow_html=True)
 
     # Export table to CSV
     st.download_button("Download Table (CSV)", details_df.to_csv(index=False),file_name="extracted_data_table.csv", mime="text/csv")
