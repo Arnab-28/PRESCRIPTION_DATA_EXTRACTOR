@@ -3,4 +3,5 @@ google.generativeai
 PyPDF2
 pandas
 Pillow
+io
 pip==24.3.1
