@@ -249,19 +249,7 @@ def clean_text(text):
     # Remove extra newlines and trim leading/trailing whitespaces
     cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
     return cleaned_text
-    
-# Function to download the edited text file
-def download_edited_file():
-    if "edited_text" in st.session_state and st.session_state["edited_text"]:
-        st.download_button(
-            "Download Edited Extracted Data (.txt)",
-            st.session_state["edited_text"],
-            file_name="extracted_data.txt",
-            mime="text/plain"
-        )
-    else:
-        st.warning("No data to download. Please edit the text first.")
-        
+          
 # Initialize the Streamlit App
 #st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
@@ -297,6 +285,18 @@ Please generate in a text content don't generate in the parse format.
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
+
+# Function to download the edited text file
+def download_edited_file():
+    if "edited_text" in st.session_state and st.session_state["edited_text"]:
+        st.download_button(
+            "Download Edited Extracted Data (.txt)",
+            st.session_state["edited_text"],
+            file_name="extracted_data.txt",
+            mime="text/plain"
+        )
+    else:
+        st.warning("No data to download. Please edit the text first.")
 
 if uploaded_file:
     file_type = uploaded_file.type
