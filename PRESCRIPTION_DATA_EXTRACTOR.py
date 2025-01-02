@@ -321,7 +321,7 @@ if uploaded_file:
                 st.session_state["extracted_text"] = cleaned_response
             
                 # Display the cleaned response in a text area, allowing the user to edit
-                st.session_state["edited_text"] = st.text_area("Extracted Data (editable)", st.session_state["edited_text"], height=200)
+                st.session_state["edited_text"] = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
 
                 # Button to save edited text
                 #if st.button("Save Edited Extracted Data"):
