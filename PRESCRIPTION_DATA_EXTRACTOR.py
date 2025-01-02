@@ -322,7 +322,7 @@ if uploaded_file:
             # Display the cleaned response in a text area, allowing the user to edit
             edited_text = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
             
-            st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
+            st.download_button("Download Edited Extracted Data (.txt)", edited_text, file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
