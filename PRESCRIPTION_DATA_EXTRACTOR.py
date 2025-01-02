@@ -316,41 +316,18 @@ if uploaded_file:
         if image_part or pdf_text:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
-                # Clean the response using the cleaned_text function
                 cleaned_response = clean_text(response)
-                
-                # Save the cleaned response in session state for persistent access
-                st.session_state["extracted_text"] = cleaned_response
-
-                # Display the cleaned response in a text area (editable)
-                st.session_state["edited_text"] = cleaned_response  # Initialize edited_text
-        else:
-            st.warning("Please provide an image or PDF to extract information.")
-
-    # Display editable text area for extracted data
-    if "edited_text" in st.session_state:
-        st.session_state["edited_text"] = st.text_area(
-            "Extracted Data (editable)", 
-            value=st.session_state["edited_text"], 
-            height=200
-        )
-
-    # Save Edited Data and Provide Download Option
-    if st.button("Save Edited Extracted Data (.txt)"):
-        # Ensure session state variables are updated
-        if "edited_text" in st.session_state:
-            st.session_state["extracted_text"] = st.session_state["edited_text"]
-
-        # Provide the download button for the updated text
-        if st.session_state["extracted_text"]:
-            st.download_button(
-                "Download Edited Extracted Data (.txt)",
-                st.session_state["extracted_text"],
-                file_name="extracted_data.txt",
-                mime="text/plain"
-            )
-        else:
-            st.warning("No data available to download.")
+            st.session_state["extracted_text"] = cleaned_response
+            
+            # Display the cleaned response in a text area, allowing the user to edit
+            edited_text = st.text_area("Extracted Data (editable)", cleaned_response, height=200)
+            
+            # Download the cleaned extracted text as .txt file
+            if st.button("Download Edited Extracted Data in .txt format"):
+                with open("extracted_data.txt","w") as f:
+                    f.write(edited_text)
+            st.success("Successfully Download Edited Extracted Data!")
+            #st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
