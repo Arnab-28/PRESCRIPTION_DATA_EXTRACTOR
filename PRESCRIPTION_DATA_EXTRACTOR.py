@@ -318,22 +318,16 @@ if uploaded_file:
             if response:
                 cleaned_response = clean_text(response)
                 
-                # Initialize session state if not already done
-                if "extracted_text" not in st.session_state:
-                    st.session_state["extracted_text"] = cleaned_response
-                if "edited_text" not in st.session_state:
-                    st.session_state["edited_text"] = cleaned_response
-        
-                #st.session_state["extracted_text"] = cleaned_response
+                st.session_state["extracted_text"] = cleaned_response
             
                 # Display the cleaned response in a text area, allowing the user to edit
                 st.session_state["edited_text"] = st.text_area("Extracted Data (editable)", st.session_state["edited_text"], height=200)
 
                 # Button to save edited text
-                if st.button("Save Edited Extracted Data"):
-                    st.session_state["extracted_text"] = st.session_state["edited_text"]
-                    st.success("Edited data saved!")
-                #st.session_state["extracted_text"] = st.session_state["edited_text"]
+                #if st.button("Save Edited Extracted Data"):
+                    #st.session_state["extracted_text"] = st.session_state["edited_text"]
+                    #st.success("Edited data saved!")
+                st.session_state["extracted_text"] = st.session_state["edited_text"]
                 # Download button
                 st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
 
