@@ -286,18 +286,6 @@ uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document",
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
 
-# Function to download the edited text file
-def download_edited_file():
-    if "edited_text" in st.session_state and st.session_state["edited_text"]:
-        st.download_button(
-            "Download Edited Extracted Data (.txt)",
-            st.session_state["edited_text"],
-            file_name="extracted_data.txt",
-            mime="text/plain"
-        )
-    else:
-        st.warning("No data to download. Please edit the text first.")
-
 if uploaded_file:
     file_type = uploaded_file.type
     image_part = None
@@ -339,6 +327,18 @@ if uploaded_file:
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
+
+# Function to download the edited text file
+def download_edited_file():
+    if "edited_text" in st.session_state and st.session_state["edited_text"]:
+        st.download_button(
+            "Download Edited Extracted Data (.txt)",
+            st.session_state["edited_text"],
+            file_name="extracted_data.txt",
+            mime="text/plain"
+        )
+    else:
+        st.warning("No data to download. Please edit the text first.")
 
 if uploaded_text_file:
     text_data = uploaded_text_file.read().decode("utf-8")
