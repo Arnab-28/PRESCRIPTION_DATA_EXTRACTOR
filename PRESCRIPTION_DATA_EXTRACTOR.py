@@ -242,6 +242,14 @@ def parse_gemini_response(response):
     # Convert list of details into a DataFrame
     return pd.DataFrame(all_details)
 
+# Function to clean the text by removing '*' and extra newlines
+def clean_text(text):
+    # Remove '*' characters
+    cleaned_text = re.sub(r"\*+", "", text)
+    # Remove extra newlines and trim leading/trailing whitespaces
+    cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
+    return cleaned_text
+    
 # Function to download the edited text file
 def download_edited_file():
     if "edited_text" in st.session_state and st.session_state["edited_text"]:
@@ -253,15 +261,7 @@ def download_edited_file():
         )
     else:
         st.warning("No data to download. Please edit the text first.")
-
-# Function to clean the text by removing '*' and extra newlines
-def clean_text(text):
-    # Remove '*' characters
-    cleaned_text = re.sub(r"\*+", "", text)
-    # Remove extra newlines and trim leading/trailing whitespaces
-    cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
-    return cleaned_text
-
+        
 # Initialize the Streamlit App
 #st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
