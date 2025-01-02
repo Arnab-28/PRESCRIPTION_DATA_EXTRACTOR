@@ -326,7 +326,7 @@ if uploaded_file:
 
                 # Update the session state with the edited text when the user edits it
                 if st.button("Save Edited Extracted Data (.txt)"):
-                    edited_text != st.session_state["extracted_text"]:
+                    if edited_text != st.session_state["extracted_text"]:
                         st.session_state["extracted_text"] = edited_text
                 
                     # Display the download button only if there is content to download
