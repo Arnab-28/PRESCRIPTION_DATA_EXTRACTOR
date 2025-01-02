@@ -327,19 +327,19 @@ if uploaded_file:
         else:
             st.warning("Please provide an image or PDF to extract information.")
 
-# Display editable text area for extracted data
-if "edited_text" in st.session_state:
-    st.session_state["edited_text"] = st.text_area(
-        "Extracted Data (editable)", 
-        value=st.session_state["edited_text"], 
-        height=200
-    )
-
-# Save Edited Data and Provide Download Option
-if st.button("Save Edited Extracted Data (.txt)"):
-    # Ensure session state variables are updated
+    # Display editable text area for extracted data
     if "edited_text" in st.session_state:
-        st.session_state["extracted_text"] = st.session_state["edited_text"]
+        st.session_state["edited_text"] = st.text_area(
+            "Extracted Data (editable)", 
+            value=st.session_state["edited_text"], 
+            height=200
+        )
+
+    # Save Edited Data and Provide Download Option
+    if st.button("Save Edited Extracted Data (.txt)"):
+        # Ensure session state variables are updated
+        if "edited_text" in st.session_state:
+            st.session_state["extracted_text"] = st.session_state["edited_text"]
 
         # Provide the download button for the updated text
         if st.session_state["extracted_text"]:
