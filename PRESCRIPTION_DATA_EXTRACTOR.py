@@ -256,9 +256,6 @@ st.header("Medical Document Data Extractor")
 if "edited_text" not in st.session_state:
     st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
-if "extracted_text" not in st.session_state:
-    st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
-    
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
 
@@ -316,8 +313,8 @@ if uploaded_file:
                 cleaned_response = clean_text(response)
 
             # Initialize session state for the edited text
-            if "extracted_text" not in st.session_state:
-                st.session_state["extracted_text"] = cleaned_response
+            if "edited_text" not in st.session_state:
+                st.session_state["edited_text"] = cleaned_response
             
             # Function to download the edited text file
             def download_edited_file():
