@@ -342,6 +342,14 @@ if uploaded_file:
                 }});
                 </script>
                 """, unsafe_allow_html=True)
+
+            # Display download button after extraction
+            st.download_button(
+                "Download Extracted Data (TXT)",
+                data=st.session_state["edited_text"],
+                file_name="extracted_data.txt",
+                mime="text/plain"
+            )
             
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
