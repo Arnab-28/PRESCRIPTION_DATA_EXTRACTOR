@@ -241,7 +241,7 @@ def parse_gemini_response(response):
             
     # Convert list of details into a DataFrame
     return pd.DataFrame(all_details)
-
+     
 # Function to clean the text by removing '*' and extra newlines
 def clean_text(text):
     # Remove '*' characters
@@ -249,8 +249,9 @@ def clean_text(text):
     # Remove extra newlines and trim leading/trailing whitespaces
     cleaned_text = re.sub(r"\n\s*\n", "\n", cleaned_text).strip()
     return cleaned_text
-          
+
 # Initialize the Streamlit App
+#st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
 
 # Initialize session states if they do not exist
@@ -285,11 +286,6 @@ uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document",
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
 
-# Function to handle changes in the text area
-def edited_file():
-    if "edited_text" in st.session_state:
-        st.session_state["edited_text"] = st.session_state["edited_text"]
-    
 if uploaded_file:
     file_type = uploaded_file.type
     image_part = None
@@ -321,16 +317,21 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
+
+            # Initialize session state for the edited text
+            if "edited_text" not in st.session_state:
                 st.session_state["edited_text"] = cleaned_response
-
-# Always display the text area and download button
-if "edited_text" in st.session_state:
-    st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=edited_file)
-
-# Ensure the download button persists
-if "edited_text" in st.session_state:
-    st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
-
+            
+            # Function to download the edited text file
+            def download_edited_file():
+                if "edited_text" in st.session_state and st.session_state["edited_text"]:
+                    st.download_button("Download Edited Extracted Data (.txt)",st.session_state["edited_text"],file_name="extracted_data.txt",mime="text/plain")
+                else:
+                    st.warning("No data to download. Please edit the text first.")
+                    
+            # Display the cleaned response in a text area, allowing the user to edit
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=download_edited_file)
+            
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
 
