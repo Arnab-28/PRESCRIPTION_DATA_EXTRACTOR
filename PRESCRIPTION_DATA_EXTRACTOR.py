@@ -278,19 +278,14 @@ Please follow these instructions carefully:
 Please generate in a text content don't generate in the parse format.
 """
 
+# Function to trigger download on Ctrl+Enter
+def trigger_download():
+    st.session_state["trigger_download"] = True
+
 # File uploader for multiple files
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
-
-def download_edited_file():
-    if st.session_state["edited_text"]:
-        st.download_button(
-            "Download Edited Extracted Data (.txt)",
-            data=st.session_state["edited_text"],
-            file_name="extracted_data.txt",
-            mime="text/plain"
-        )
 
 if uploaded_file:
     file_type = uploaded_file.type
@@ -329,10 +324,15 @@ if uploaded_file:
             st.session_state["edited_text"] = cleaned_response
                 
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text")
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=trigger_download)
 
             # Display download button after extraction
-            download_edited_file()
+            st.download_button(
+                "Download Edited Extracted Data (.txt)",
+                data=st.session_state["edited_text"],
+                file_name="extracted_data.txt",
+                mime="text/plain"
+            )
 
 # Add JavaScript to capture Ctrl+Enter and trigger download
 st.markdown("""
@@ -340,14 +340,17 @@ st.markdown("""
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && event.key === 'Enter') {
         event.preventDefault();
-        const link = document.createElement('a');
-        const content = document.querySelector('textarea[data-testid="stTextArea-input"]').value;
-        const blob = new Blob([content], {type: 'text/plain'});
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.download = 'extracted_data.txt';
-        link.click();
-        URL.revokeObjectURL(url);
+        const textArea = document.querySelector('textarea[data-testid="stTextArea-input"]');
+        if (textArea) {
+            const text = textArea.value;
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'extracted_data.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
     }
 });
 </script>
