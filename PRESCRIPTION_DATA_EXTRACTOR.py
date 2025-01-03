@@ -256,6 +256,8 @@ st.header("Medical Document Data Extractor")
 # Initialize session states if they do not exist
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
+if "edited_text" not in st.session_state:
+    st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
@@ -280,6 +282,15 @@ Please generate in a text content don't generate in the parse format.
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
+
+def download_edited_file():
+    if st.session_state["edited_text"]:
+        st.download_button(
+            "Download Edited Extracted Data (.txt)",
+            data=st.session_state["edited_text"],
+            file_name="extracted_data.txt",
+            mime="text/plain"
+        )
 
 if uploaded_file:
     file_type = uploaded_file.type
@@ -314,28 +325,23 @@ if uploaded_file:
                 cleaned_response = clean_text(response)
 
             # Initialize session state for the edited text
-            if "extracted_text" not in st.session_state:
-                st.session_state["extracted_text"] = cleaned_response
-         
+            st.session_state["extracted_text"] = cleaned_response
+            st.session_state["edited_text"] = cleaned_response
+                
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text")
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text")
 
             # Display download button after extraction
-            st.download_button(
-                "Download Extracted Data",
-                data=st.session_state["extracted_text"],
-                file_name="extracted_data.txt",
-                mime="text/plain"
-            )
+            download_edited_file()
 
-# Add JavaScript to capture Ctrl+Enter and trigger download button
+# Add JavaScript to capture Ctrl+Enter and trigger download
 st.markdown("""
 <script>
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && event.key === 'Enter') {
         event.preventDefault();
         const link = document.createElement('a');
-        const content = document.getElementById('extracted_text').value;
+        const content = document.querySelector('textarea[data-testid="stTextArea-input"]').value;
         const blob = new Blob([content], {type: 'text/plain'});
         const url = URL.createObjectURL(blob);
         link.href = url;
