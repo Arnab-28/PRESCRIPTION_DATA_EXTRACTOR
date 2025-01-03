@@ -251,7 +251,6 @@ def clean_text(text):
     return cleaned_text
 
 # Initialize the Streamlit App
-#st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
 
 if "edited_text" not in st.session_state:
