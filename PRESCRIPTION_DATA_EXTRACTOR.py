@@ -79,6 +79,13 @@ display_social_icons()
 # Function to load Gemini 1.5 Flash Model
 model = genai.GenerativeModel('gemini-1.5-flash')
 
+# Function to download the edited text file
+def download_edited_file():
+    if "extracted_text" in st.session_state and st.session_state["extracted_text"]:
+        st.download_button("Download Edited Extracted Data (.txt)",st.session_state["extracted_text"],file_name="extracted_data.txt",mime="text/plain")
+    else:
+        st.warning("No data to download. Please edit the text first.")
+
 # Function to get response from Gemini model
 def get_gemini_response(input_prompt, image_parts=None, pdf_text=None):
     # Ensure input data is not empty
@@ -256,8 +263,6 @@ st.header("Medical Document Data Extractor")
 # Initialize session states if they do not exist
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
-if "edited_text" not in st.session_state:
-    st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
 # Define the Default input prompt for Data extraction
 prompt = """You are an expert in understanding Medical Prescription or Pathology Test Report.
@@ -278,15 +283,10 @@ Please follow these instructions carefully:
 Please generate in a text content don't generate in the parse format.
 """
 
-# Function to handle Ctrl+Enter and trigger download
-def handle_keydown(event):
-    if event.ctrlKey and event.key == 'Enter':
-        # Update the session state to trigger download
-        st.session_state["trigger_download"] = True
-
 # File uploader for multiple files
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
+st.session_state.clear()
 
 if uploaded_file:
     file_type = uploaded_file.type
@@ -321,42 +321,12 @@ if uploaded_file:
                 cleaned_response = clean_text(response)
 
             # Initialize session state for the edited text
-            st.session_state["extracted_text"] = cleaned_response
-            st.session_state["edited_text"] = cleaned_response
-                
+            if "extracted_text" not in st.session_state:
+                st.session_state["extracted_text"] = cleaned_response
+         
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text")
-
-            # Display download button after extraction
-            st.download_button(
-                "Download Edited Extracted Data (.txt)",
-                data=st.session_state["edited_text"],
-                file_name="extracted_data.txt",
-                mime="text/plain"
-            )
-
-# Add JavaScript to capture Ctrl+Enter and trigger download
-st.markdown("""
-<script>
-document.addEventListener('keydown', function(event) {
-    if (event.ctrlKey && event.key === 'Enter') {
-        event.preventDefault();
-        const textArea = document.querySelector('textarea[data-testid="stTextArea-input"]');
-        if (textArea) {
-            const text = textArea.value;
-            const blob = new Blob([text], {type: 'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'extracted_data.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    }
-});
-</script>
-""", unsafe_allow_html=True)
-
+            st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text", on_change=download_edited_file)
+            
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
 
