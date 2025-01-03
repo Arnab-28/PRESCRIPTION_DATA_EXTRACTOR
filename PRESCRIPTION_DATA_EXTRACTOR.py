@@ -83,7 +83,7 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 def download_edited_file():
     st.session_state.extracted_text = edited_text
     #if "extracted_text" in st.session_state and st.session_state["extracted_text"]:
-        st.download_button("Download Edited Extracted Data (.txt)",st.session_state["extracted_text"],file_name="extracted_data.txt",mime="text/plain")
+        #st.download_button("Download Edited Extracted Data (.txt)",st.session_state["extracted_text"],file_name="extracted_data.txt",mime="text/plain")
     #else:
         #st.warning("No data to download. Please edit the text first.")
 
