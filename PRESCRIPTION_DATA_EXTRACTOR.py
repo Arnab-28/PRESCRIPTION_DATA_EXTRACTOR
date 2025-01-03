@@ -253,6 +253,7 @@ def clean_text(text):
 # Initialize the Streamlit App
 st.header("Medical Document Data Extractor")
 
+# Initialize session states if they do not exist
 if "edited_text" not in st.session_state:
     st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
