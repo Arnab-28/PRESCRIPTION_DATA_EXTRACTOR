@@ -285,9 +285,10 @@ uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document",
                                  type=["jpg", "jpeg", "png", "pdf"])
 st.session_state.clear()
 
-# Function to save the edited text in session state
-def save_edited_text():
-    st.session_state["edited_text"] = st.session_state.get("editable_text", "")
+# Function to handle changes in the text area
+def edited_file():
+    if "edited_text" in st.session_state:
+        st.session_state["edited_text"] = st.session_state["edited_text"]
     
 if uploaded_file:
     file_type = uploaded_file.type
@@ -320,17 +321,15 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
-                
-                # Initialize session state for the edited text
-                if "edited_text" not in st.session_state:
-                    st.session_state["edited_text"] = cleaned_response
-        
-                # Display the cleaned response in a text area, allowing the user to edit
-                st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=save_edited_text)
+                st.session_state["edited_text"] = cleaned_response
 
-                # Re-display the download button for edited text
-                if st.session_state["edited_text"]:
-                    st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"],file_name="extracted_data.txt", mime="text/plain")
+# Always display the text area and download button
+if "edited_text" in st.session_state:
+    st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=edited_file)
+
+# Ensure the download button persists
+if "edited_text" in st.session_state:
+    st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"], file_name="extracted_data.txt", mime="text/plain")
 
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
