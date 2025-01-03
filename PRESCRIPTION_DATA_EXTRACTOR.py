@@ -327,19 +327,21 @@ if uploaded_file:
             st.markdown("""
             <script>
               const textArea = document.getElementById('st-text-area'); 
-              textArea.addEventListener('keydown', (event) => {
-              if (event.key === 'Enter' && event.ctrlKey) {
-                    event.preventDefault(); // Prevent form submission
-                    const text = textArea.value;
-                    const blob = new Blob([text], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'extracted_data.txt';
-                    a.click();
-              URL.revokeObjectURL(url); 
-                }
-              });
+              textArea.addEventListener('keydown', (event) => 
+                {
+                    if (event.key === 'Enter' && event.ctrlKey) 
+                        {
+                            event.preventDefault(); 
+                            const text = textArea.value;
+                            const blob = new Blob([text], { type: 'text/plain' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'extracted_data.txt';
+                            a.click();
+                            URL.revokeObjectURL(url); 
+                        }
+                });
             </script>
             """) 
             
