@@ -79,6 +79,13 @@ display_social_icons()
 # Function to load Gemini 1.5 Flash Model
 model = genai.GenerativeModel('gemini-1.5-flash')
 
+# Function to download the edited text file
+def download_edited_file():
+    if "edited_text" in st.session_state and st.session_state["edited_text"]:
+        st.download_button("Download Edited Extracted Data (.txt)",st.session_state["edited_text"],file_name="extracted_data.txt",mime="text/plain")
+    else:
+        st.warning("No data to download. Please edit the text first.")
+
 # Function to get response from Gemini model
 def get_gemini_response(input_prompt, image_parts=None, pdf_text=None):
     # Ensure input data is not empty
@@ -319,14 +326,7 @@ if uploaded_file:
             # Initialize session state for the edited text
             if "edited_text" not in st.session_state:
                 st.session_state["edited_text"] = cleaned_response
-            
-            # Function to download the edited text file
-            def download_edited_file():
-                if "edited_text" in st.session_state and st.session_state["edited_text"]:
-                    st.download_button("Download Edited Extracted Data (.txt)",st.session_state["edited_text"],file_name="extracted_data.txt",mime="text/plain")
-                else:
-                    st.warning("No data to download. Please edit the text first.")
-                    
+                
             # Display the cleaned response in a text area, allowing the user to edit
             st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=download_edited_file)
             
