@@ -254,11 +254,6 @@ def clean_text(text):
 #st.set_page_config(page_title="Prescription Data Extractor")
 st.header("Medical Document Data Extractor")
 
-# Initialize session states if they do not exist
-if "all_details_df" not in st.session_state:
-    st.session_state["all_details_df"] = pd.DataFrame()  # Initialize an empty DataFrame
-if "extracted_text" not in st.session_state:
-    st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
 if "edited_text" not in st.session_state:
     st.session_state["edited_text"] = ""  # Initialize edited_text as an empty string
 
