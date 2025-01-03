@@ -278,11 +278,9 @@ Please follow these instructions carefully:
 Please generate in a text content don't generate in the parse format.
 """
 
-# Function to handle Ctrl+Enter and trigger download
-def handle_keydown(event):
-    if event.ctrlKey and event.key == 'Enter':
-        # Update the session state to trigger download
-        st.session_state["trigger_download"] = True
+# Function to trigger download
+def trigger_download():
+    st.session_state["trigger_download"] = True
 
 # File uploader for multiple files
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
@@ -325,7 +323,7 @@ if uploaded_file:
             st.session_state["edited_text"] = cleaned_response
                 
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text")
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=trigger_download)
 
             # Display download button after extraction
             st.download_button(
