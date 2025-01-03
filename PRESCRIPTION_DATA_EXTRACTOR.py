@@ -321,7 +321,7 @@ if uploaded_file:
                 st.session_state["edited_text"] = cleaned_response
                 
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text")
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=lambda: st.session_state.update({"edited_text": st.session_state["edited_text"]}))
 
            # Add JavaScript to capture Ctrl+Enter
             st.markdown(f"""
