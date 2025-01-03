@@ -320,33 +320,33 @@ if uploaded_file:
             # Display the cleaned response in a text area, allowing the user to edit
             st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text")
 
-            # Add JavaScript to capture Ctrl+Enter and trigger download button
-            st.markdown("""
-                <script>
-                document.addEventListener('keydown', function(event) {
-                    if (event.ctrlKey && event.key === 'Enter') {
-                        event.preventDefault();
-                        const link = document.createElement('a');
-                        const content = document.getElementById('extracted_text').value;
-                        const blob = new Blob([content], {type: 'text/plain'});
-                        const url = URL.createObjectURL(blob);
-                        link.href = url;
-                        link.download = 'extracted_data.txt';
-                        link.click();
-                        URL.revokeObjectURL(url);
-                    }
-                });
-                </script>
-                """, unsafe_allow_html=True)
-
             # Display download button after extraction
             st.download_button(
-                "Download Extracted Data (TXT)",
+                "Download Extracted Data",
                 data=st.session_state["extracted_text"],
                 file_name="extracted_data.txt",
                 mime="text/plain"
             )
-            
+
+# Add JavaScript to capture Ctrl+Enter and trigger download button
+st.markdown("""
+<script>
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'Enter') {
+        event.preventDefault();
+        const link = document.createElement('a');
+        const content = document.getElementById('extracted_text').value;
+        const blob = new Blob([content], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'extracted_data.txt';
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+});
+</script>
+""", unsafe_allow_html=True)
+
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
 
