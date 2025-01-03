@@ -319,19 +319,29 @@ if uploaded_file:
             # Initialize session state for the edited text
             if "edited_text" not in st.session_state:
                 st.session_state["edited_text"] = cleaned_response
-            
-            # Function to download the edited text file
-            def download_edited_file():
-                if "edited_text" in st.session_state and st.session_state["edited_text"]:
-                    st.download_button("Download Edited Extracted Data (.txt)",st.session_state["edited_text"],file_name="extracted_data.txt",mime="text/plain")
-                else:
-                    st.warning("No data to download. Please edit the text first.")
-                    
+                
             # Display the cleaned response in a text area, allowing the user to edit
-            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=download_edited_file)
+            st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200)
 
-            # Call download_edited_file function within the button click block
-            download_edited_file()
+           # Add JavaScript to capture Ctrl+Enter
+            st.markdown("""
+            <script>
+              const textArea = document.getElementById('st-text-area'); 
+              textArea.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter' && event.ctrlKey) {
+                    event.preventDefault(); // Prevent form submission
+                    const text = textArea.value;
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'extracted_data.txt';
+                    a.click();
+              URL.revokeObjectURL(url); 
+                }
+              });
+            </script>
+            """) 
             
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
