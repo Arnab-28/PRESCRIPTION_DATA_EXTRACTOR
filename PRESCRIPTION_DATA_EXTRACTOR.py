@@ -79,10 +79,6 @@ display_social_icons()
 # Function to load Gemini 1.5 Flash Model
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Function to download the edited text file
-def download_edited_file():
-    st.session_state["extracted_text"] = edited_text
-
 # Function to get response from Gemini model
 def get_gemini_response(input_prompt, image_parts=None, pdf_text=None):
     # Ensure input data is not empty
@@ -260,7 +256,7 @@ st.header("Medical Document Data Extractor")
 # Initialize session states if they do not exist
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
-
+    
 if "extracted_text" not in st.session_state:
     st.session_state["extracted_text"] = ""  # Initialize extracted_text as an empty string
 
@@ -319,15 +315,20 @@ if uploaded_file:
             response = get_gemini_response(prompt, image_parts=image_part, pdf_text=pdf_text)
             if response:
                 cleaned_response = clean_text(response)
-                
+
             # Initialize session state for the edited text
             if "extracted_text" not in st.session_state:
                 st.session_state["extracted_text"] = cleaned_response
-                
+            
+            # Function to download the edited text file
+            def download_edited_file():
+                if "extracted_text" in st.session_state and st.session_state["extracted_text"]:
+                    st.download_button("Download Edited Extracted Data (.txt)",st.session_state["extracted_text"],file_name="extracted_data.txt",mime="text/plain")
+                else:
+                    st.warning("No data to download. Please edit the text first.")
+                    
             # Display the cleaned response in a text area, allowing the user to edit
-            edited_text = st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text", on_change=download_edited_file)
-        
-            st.download_button("Download Edited Extracted Data (.txt)",edited_text,file_name="extracted_data.txt",mime="text/plain")
+            st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text", on_change=download_edited_file)
             
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
