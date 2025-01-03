@@ -321,7 +321,7 @@ if uploaded_file:
             
             # Function to download the edited text file
             def download_edited_file():
-                if "extracted_text" in st.session_state and st.session_state["extracted_text"]:
+                if "edited_text" in st.session_state and st.session_state["edited_text"]:
                     st.download_button("Download Edited Extracted Data (.txt)",st.session_state["edited_text"],file_name="extracted_data.txt",mime="text/plain")
                 else:
                     st.warning("No data to download. Please edit the text first.")
