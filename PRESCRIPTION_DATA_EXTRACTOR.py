@@ -286,8 +286,9 @@ uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document",
 st.session_state.clear()
 
 # Function to download the edited text file
-def download_edited_file():
-    st.session_state["edited_text"] = st.session_state["edited_text"]
+def edited_file():
+    if st.session_state.edited_text:
+        st.session_state["edited_text"] = st.session_state["edited_text"]
     
 if uploaded_file:
     file_type = uploaded_file.type
@@ -326,7 +327,7 @@ if uploaded_file:
                     st.session_state["edited_text"] = cleaned_response
         
                 # Display the cleaned response in a text area, allowing the user to edit
-                st.text_area("Extracted Data (editable)", value=st.session_state["edited_text"], height=200, key="edited_text", on_change=download_edited_file)
+                st.text_area("Extracted Data (editable)", height=200, key="edited_text", on_change=edited_file)
 
                 st.download_button("Download Edited Extracted Data (.txt)", st.session_state["edited_text"],file_name="extracted_data.txt", mime="text/plain")
 
