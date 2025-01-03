@@ -326,7 +326,7 @@ if uploaded_file:
            # Add JavaScript to capture Ctrl+Enter
             st.markdown(f"""
             <script>
-                const textArea = document.getElementById('st-text-area-{"edited_text".key}'); 
+                const textArea = document.getElementById('st.text_area{edited_text.key}'); 
                 textArea.addEventListener('keydown', (event) => {{
                     if (event.key === 'Enter' && event.ctrlKey) {{
                       event.preventDefault(); // Prevent form submission
