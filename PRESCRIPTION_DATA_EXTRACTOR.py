@@ -82,13 +82,11 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 # Function to download the edited text file
 def download_edited_file():
     if "extracted_text" in st.session_state and st.session_state["extracted_text"]:
-        st.download_button("Download Edited Extracted Data (.txt)",
-                           st.session_state["extracted_text"], file_name="extracted_data.txt", mime="text/plain")
-        st.success("File successfully prepared for download!")
+        st.download_button("Download Edited Extracted Data (.txt)",st.session_state["extracted_text"],file_name="extracted_data.txt",mime="text/plain")
     else:
         st.warning("No data to download. Please edit the text first.")
 
-# Function to get a response from the Gemini model
+# Function to get response from Gemini model
 def get_gemini_response(input_prompt, image_parts=None, pdf_text=None):
     # Ensure input data is not empty
     if not image_parts and not pdf_text:
@@ -121,6 +119,7 @@ def parse_gemini_response(response):
 
     # Iterate through each block and extract details
     for block in patient_blocks:
+        
         if not block.strip():
             continue
         
@@ -147,81 +146,109 @@ def parse_gemini_response(response):
         for line in lines:
             # Extract Patient Name
             if "Patient Name:" in line:
+                # Extract the portion of the line after "Patient Name:"
                 patient_name = line.split("Patient Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Patient Name"] = re.sub(r"^\*\*|\*\*$", "", patient_name)
                 
             # Extract Patient Age
             elif "Patient Age:" in line:
+                # Extract the portion of the line after "Patient Age:"
                 patient_age = line.split("Patient Age:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Patient Age (in Years)"] = re.sub(r"^\*\*|\*\*$", "", patient_age) 
                 
             # Extract Patient Gender
             elif "Patient Gender:" in line:
+                # Extract the portion of the line after "Patient Gender:"
                 patient_gender = line.split("Patient Gender:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Patient Gender"] = re.sub(r"^\*\*|\*\*$", "", patient_gender)
 
             # Extract Doctor Name
             elif "Doctor Name:" in line:
+                # Extract the portion of the line after "Doctor Name:"
                 doctor_name = line.split("Doctor Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Doctor Name"] = re.sub(r"^\*\*|\*\*$", "", doctor_name)
             
             # Extract Doctor Visiting Date
             elif "Doctor Visiting Date:" in line:
+                # Extract the portion of the line after "Doctor Visiting Date:"
                 doctor_visiting_date = line.split("Doctor Visiting Date:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Doctor Visiting Date"] = re.sub(r"^\*\*|\*\*$", "", doctor_visiting_date)
                 
             # Extract Prescribed Medications & Dosage & Duration
             elif "Prescribed Medications & Dosage & Duration:" in line:
+                # Extract the portion of the line after "Prescribed Medications & Dosage & Duration:"
                 prescribed_medications = line.split("Prescribed Medications & Dosage & Duration:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Prescribed Medications & Dosage & Duration"] = re.sub(r"^\*\*|\*\*$", "", prescribed_medications)
 
             # Extract Disease Name
             elif "Disease Name:" in line:
+                # Extract the portion of the line after "Disease Name:"
                 disease_name = line.split("Disease Name:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Disease Name"] = re.sub(r"^\*\*|\*\*$", "", disease_name)
 
-            # Extract Observations
+            # Extract Disease Name
             elif "Observations:" in line:
+                # Extract the portion of the line after "Observations:"
                 observations = line.split("Observations:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Observations"] = re.sub(r"^\*\*|\*\*$", "", observations)
 
-            # Extract Blood Pressure
-            elif "Blood Pressure:" in line:
+            # Extract Blood Pressure (BP)
+            elif "Blood Pressure:"  in line:
+                # Extract the portion of the line after "Observations:"
                 blood_pressure = line.split("Blood Pressure:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Blood Pressure (in mm of Hg)"] = re.sub(r"^\*\*|\*\*$", "", blood_pressure)
 
-            # Extract Pulse Rate
+            # Extract Pulse Rate (PR)
             elif "Pulse Rate" in line:
+                # Extract the portion of the line after "Disease Name:"
                 pulse_rate = line.split("Pulse Rate:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Pulse Rate (in beats per minute)"] = re.sub(r"^\*\*|\*\*$", "", pulse_rate)
 
             # Extract Body Weight
             elif "Body Weight" in line:
+                # Extract the portion of the line after "Disease Name:"
                 body_weight = line.split("Body Weight:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Body Weight (in Kg)"] = re.sub(r"^\*\*|\*\*$", "", body_weight)
 
             # Extract Oxygen Saturation
             elif "Oxygen Saturation" in line:
+                # Extract the portion of the line after "Disease Name:"
                 spo2 = line.split("Oxygen Saturation:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Oxygen Saturation (in %)"] = re.sub(r"^\*\*|\*\*$", "", spo2)
 
-            # Extract Pathology Test Required
+            # Extract Pathology Test Required Details
             elif "Pathology Test Required" in line:
+                # Extract the portion of the line after "Disease Name:"
                 pathology_test_required = line.split("Pathology Test Required:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Pathology Test Required"] = re.sub(r"^\*\*|\*\*$", "", pathology_test_required)
 
-            # Extract Pathology Test Report
+            # Extract Pathology Test Report Details
             elif "Pathology Test Report" in line:
+                # Extract the portion of the line after "Disease Name:"
                 pathology_test_report = line.split("Pathology Test Report:", 1)[-1].strip()
+                # Remove unwanted characters (e.g., **, trailing spaces)
                 details["Pathology Test Report"] = re.sub(r"^\*\*|\*\*$", "", pathology_test_report)
                 
         # Add the extracted details to the list only if there's valid information
         if any(value != "N/A" for value in details.values()):
             all_details.append(details)
-    
+            
     # Convert list of details into a DataFrame
     return pd.DataFrame(all_details)
-
+     
 # Function to clean the text by removing '*' and extra newlines
 def clean_text(text):
     # Remove '*' characters
@@ -252,12 +279,14 @@ Please follow these instructions carefully:
 1. Do not include any additional text, comments, or explanations in your response.
 2. If no information matches the description, return 'N/A' value.
 3. Your output should contain only the data that is explicitly requested, with no other text.
+
 Please generate in a text content don't generate in the parse format.
 """
 
-# File uploader for images and PDFs
+# File uploader for multiple files
 uploaded_file = st.file_uploader("Choose an Image/PDF of the Medical Document", 
                                  type=["jpg", "jpeg", "png", "pdf"])
+st.session_state.clear()
 
 if uploaded_file:
     file_type = uploaded_file.type
@@ -291,14 +320,12 @@ if uploaded_file:
             if response:
                 cleaned_response = clean_text(response)
 
-                # Initialize session state for the edited text
+            # Initialize session state for the edited text
+            if "extracted_text" not in st.session_state:
                 st.session_state["extracted_text"] = cleaned_response
-                
-                # Display the cleaned response in a text area, allowing the user to edit
-                st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text")
-
-                # Add the Download button immediately after the text area
-                download_edited_file()  # Call the download function here to show the button appropriately
+         
+            # Display the cleaned response in a text area, allowing the user to edit
+            st.text_area("Extracted Data (editable)", value=st.session_state["extracted_text"], height=200, key="extracted_text", on_change=download_edited_file)
             
 # Upload the processed text file
 uploaded_text_file = st.file_uploader("Upload Extracted Text File", type=["txt"])
@@ -309,7 +336,7 @@ if uploaded_text_file:
     # Parse the text data and convert it into structured table format
     details_df = parse_gemini_response(text_data)
     # Display the DataFrame in Streamlit without the index column
-    st.dataframe(details_df, hide_index=True)
+    st.dataframe(details_df,hide_index = True)
 
     # Export table to CSV
-    st.download_button("Download Table (CSV)", details_df.to_csv(index=False), file_name="extracted_data_table.csv", mime="text/csv")
+    st.download_button("Download Table (CSV)", details_df.to_csv(index=False),file_name="extracted_data_table.csv", mime="text/csv")
