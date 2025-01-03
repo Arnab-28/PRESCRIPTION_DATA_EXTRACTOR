@@ -288,7 +288,7 @@ st.session_state.clear()
 # Function to download the edited text file
 def edited_file():
     if st.session_state.edited_text:
-        st.session_state["edited_text"] = st.session_state["edited_text"]
+        st.session_state.edited_text = st.session_state["edited_text"]
     
 if uploaded_file:
     file_type = uploaded_file.type
